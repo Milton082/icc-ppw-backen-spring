@@ -19,8 +19,17 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'org.postgresql:postgresql'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// Pruebas de Spring MVC
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+
+	// Pruebas de JPA
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+
+	// Ejecución de pruebas con JUnit
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
