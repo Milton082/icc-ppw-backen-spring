@@ -1,10 +1,14 @@
 package ec.edu.ups.icc.fundamentos01.core.exceptions.handler;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.naming.AuthenticationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -88,6 +92,48 @@ public class GlobalExceptionHandler {
 
                 return ResponseEntity
                                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(response);
+        }
+
+        @ExceptionHandler(AuthorizationDeniedException.class)
+        public ResponseEntity<ErrorResponse> handleAuthorizationDeniedException(
+                        AuthorizationDeniedException ex,
+                        HttpServletRequest request) {
+                ErrorResponse response = new ErrorResponse(
+                                HttpStatus.FORBIDDEN,
+                                "No tienes permisos para acceder a este recurso",
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.FORBIDDEN)
+                                .body(response);
+        }
+
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+                        AccessDeniedException ex,
+                        HttpServletRequest request) {
+                ErrorResponse response = new ErrorResponse(
+                                HttpStatus.FORBIDDEN,
+                                "Acceso denegado",
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.FORBIDDEN)
+                                .body(response);
+        }
+
+        @ExceptionHandler(AuthenticationException.class)
+        public ResponseEntity<ErrorResponse> handleAuthenticationException(
+                        AuthenticationException ex,
+                        HttpServletRequest request) {
+                ErrorResponse response = new ErrorResponse(
+                                HttpStatus.UNAUTHORIZED,
+                                "Credenciales inválidas o sesión expirada",
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.UNAUTHORIZED)
                                 .body(response);
         }
 }

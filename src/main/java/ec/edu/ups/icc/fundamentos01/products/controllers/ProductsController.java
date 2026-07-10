@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ec.edu.ups.icc.fundamentos01.core.dto.PaginationDto;
@@ -22,6 +26,7 @@ import ec.edu.ups.icc.fundamentos01.products.dtos.PartialUpdateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductResponseDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.UpdateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.services.ProductService;
+import ec.edu.ups.icc.fundamentos01.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
 
 @RestController
@@ -39,9 +44,10 @@ public class ProductsController {
      *
      * GET /api/products
      *
-     * Se mantiene sin paginación para comparar con los endpoints paginados.
+     * Solo puede acceder un usuario con ROLE_ADMIN.
      */
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<ProductResponseDto> findAll() {
         return service.findAll();
     }
@@ -50,8 +56,6 @@ public class ProductsController {
      * Endpoint paginado usando Page.
      *
      * GET /api/products/page
-     * GET /api/products/page?page=0&size=5
-     * GET /api/products/page?page=0&size=5&sortBy=price&direction=desc
      */
     @GetMapping("/page")
     public Page<ProductResponseDto> findAllPage(
@@ -63,8 +67,6 @@ public class ProductsController {
      * Endpoint paginado usando Slice.
      *
      * GET /api/products/slice
-     * GET /api/products/slice?page=0&size=5
-     * GET /api/products/slice?page=0&size=5&sortBy=createdAt&direction=desc
      */
     @GetMapping("/slice")
     public Slice<ProductResponseDto> findAllSlice(
@@ -78,36 +80,46 @@ public class ProductsController {
     }
 
     @PostMapping
-    public ProductResponseDto create(@Valid @RequestBody CreateProductDto dto) {
-        return service.create(dto);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProductResponseDto create(
+            @Valid @RequestBody CreateProductDto dto,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        return service.create(dto, currentUser);
     }
 
     @PutMapping("/{id}")
     public ProductResponseDto update(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateProductDto dto) {
-        return service.update(id, dto);
+            @Valid @RequestBody UpdateProductDto dto,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        return service.update(id, dto, currentUser);
     }
 
     @PatchMapping("/{id}")
     public ProductResponseDto partialUpdate(
             @PathVariable Long id,
-            @Valid @RequestBody PartialUpdateProductDto dto) {
-        return service.partialUpdate(id, dto);
+            @Valid @RequestBody PartialUpdateProductDto dto,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        return service.partialUpdate(id, dto, currentUser);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        service.delete(id, currentUser);
     }
 
     @GetMapping("/user/{userId}")
-    public List<ProductResponseDto> findByUserId(@PathVariable Long userId) {
+    public List<ProductResponseDto> findByUserId(
+            @PathVariable Long userId) {
         return service.findByUserId(userId);
     }
 
     @GetMapping("/category/{categoryId}")
-    public List<ProductResponseDto> findByCategoryId(@PathVariable Long categoryId) {
+    public List<ProductResponseDto> findByCategoryId(
+            @PathVariable Long categoryId) {
         return service.findByCategoryId(categoryId);
     }
 

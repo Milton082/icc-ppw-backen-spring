@@ -12,46 +12,57 @@ import ec.edu.ups.icc.fundamentos01.products.dtos.ProductFilterByCategoryDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductFilterByUserDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductResponseDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.UpdateProductDto;
+import ec.edu.ups.icc.fundamentos01.security.services.UserDetailsImpl;
 
 public interface ProductService {
 
-    List<ProductResponseDto> findAll();
+        List<ProductResponseDto> findAll();
 
-    ProductResponseDto findOne(Long id);
+        ProductResponseDto findOne(Long id);
 
-    ProductResponseDto create(CreateProductDto dto);
+        ProductResponseDto create(
+                        CreateProductDto dto,
+                        UserDetailsImpl currentUser);
 
-    ProductResponseDto update(Long id, UpdateProductDto dto);
+        ProductResponseDto update(
+                        Long id,
+                        UpdateProductDto dto,
+                        UserDetailsImpl currentUser);
 
-    ProductResponseDto partialUpdate(Long id, PartialUpdateProductDto dto);
+        ProductResponseDto partialUpdate(
+                        Long id,
+                        PartialUpdateProductDto dto,
+                        UserDetailsImpl currentUser);
 
-    void delete(Long id);
+        void delete(
+                        Long id,
+                        UserDetailsImpl currentUser);
 
-    List<ProductResponseDto> findByUserId(Long userId);
+        List<ProductResponseDto> findByUserId(Long userId);
 
-    List<ProductResponseDto> findByCategoryId(Long categoryId);
+        List<ProductResponseDto> findByCategoryId(Long categoryId);
 
-    List<ProductResponseDto> findByUserIdWithFilters(
-            Long userId,
-            ProductFilterByUserDto filters);
+        List<ProductResponseDto> findByUserIdWithFilters(
+                        Long userId,
+                        ProductFilterByUserDto filters);
 
-    List<ProductResponseDto> findByCategoryIdWithFilters(
-            Long categoryId,
-            ProductFilterByCategoryDto filters);
+        List<ProductResponseDto> findByCategoryIdWithFilters(
+                        Long categoryId,
+                        ProductFilterByCategoryDto filters);
 
-    Page<ProductResponseDto> findAllPage(PaginationDto pagination);
+        Page<ProductResponseDto> findAllPage(PaginationDto pagination);
 
-    Slice<ProductResponseDto> findAllSlice(PaginationDto pagination);
+        Slice<ProductResponseDto> findAllSlice(PaginationDto pagination);
 
-    Page<ProductResponseDto> findByCategoryIdWithFiltersPage(
-            Long categoryId,
-            ProductFilterByCategoryDto filters,
-            PaginationDto pagination);
+        Page<ProductResponseDto> findByCategoryIdWithFiltersPage(
+                        Long categoryId,
+                        ProductFilterByCategoryDto filters,
+                        PaginationDto pagination);
 
-    Slice<ProductResponseDto> findByCategoryIdWithFiltersSlice(
-            Long categoryId,
-            ProductFilterByCategoryDto filters,
-            PaginationDto pagination);
+        Slice<ProductResponseDto> findByCategoryIdWithFiltersSlice(
+                        Long categoryId,
+                        ProductFilterByCategoryDto filters,
+                        PaginationDto pagination);
 
-    boolean validateName(String name);
+        boolean validateName(String name);
 }

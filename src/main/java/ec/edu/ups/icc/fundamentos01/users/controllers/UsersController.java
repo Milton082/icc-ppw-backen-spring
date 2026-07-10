@@ -2,8 +2,6 @@ package ec.edu.ups.icc.fundamentos01.users.controllers;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ec.edu.ups.icc.fundamentos01.users.services.UserService;
 import ec.edu.ups.icc.fundamentos01.users.dtos.CreateUserDto;
 import ec.edu.ups.icc.fundamentos01.users.dtos.PartialUpdateUserDto;
 import ec.edu.ups.icc.fundamentos01.users.dtos.UpdateUserDto;
 import ec.edu.ups.icc.fundamentos01.users.dtos.UserResponseDto;
+import ec.edu.ups.icc.fundamentos01.users.services.UserService;
+import jakarta.validation.Valid;
 
 /*
  * Controlador REST encargado de exponer los endpoints HTTP
@@ -74,8 +73,7 @@ public class UsersController {
     @PutMapping("/{id}")
     public UserResponseDto update( // Cambiado de Object a UserResponseDto
             @PathVariable Long id,
-            @Valid @RequestBody UpdateUserDto dto
-    ) {
+            @Valid @RequestBody UpdateUserDto dto) {
         return service.update(id, dto);
     }
 
@@ -86,8 +84,7 @@ public class UsersController {
     @PatchMapping("/{id}")
     public UserResponseDto partialUpdate( // Cambiado de Object a UserResponseDto
             @PathVariable Long id,
-            @Valid @RequestBody PartialUpdateUserDto dto
-    ) {
+            @Valid @RequestBody PartialUpdateUserDto dto) {
         return service.partialUpdate(id, dto);
     }
 
