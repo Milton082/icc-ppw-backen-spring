@@ -8,19 +8,19 @@
 
 _1. Captura de verificación de Java._
 
-![Captura de verificación de Java](/fundamentos01/assets/01-javaVersion-01.png)
+![Captura de verificación de Java](./assets/01-javaVersion-01.png)
 
 _2. Captura del servidor Srping Boot ejecutandose._
 
-![Captura del servidor Spring Boot ejecutandose](/fundamentos01/assets/02-springBootServer-01.png)
+![Captura del servidor Spring Boot ejecutandose](./assets/02-springBootServer-01.png)
 
 _3. Captura del endpoint /api/status_
 
-![Captura del endpoint /api/status](/fundamentos01/assets/03-endpointStatus-01.png)
+![Captura del endpoint /api/status](./assets/03-endpointStatus-01.png)
 
 _4. Captura del comando_
 
-![Captura del comando](/fundamentos01/assets/04-comando-01.png)
+![Captura del comando](./assets/04-comando-01.png)
 
 _5. Explicación Breve_
 
@@ -37,11 +37,11 @@ creación del servidor?**
 
 _1. Captura del IDE mostrando la estructura modular_
 
-![Captura del IDE mostrando la estructura modular](/fundamentos01/assets/05-estructuraModular-02.png)
+![Captura del IDE mostrando la estructura modular](./assets/05-estructuraModular-02.png)
 
 _2. Captura del archivo Fundamentos01Application.java_
 
-![Captura del archivo Fundamentos01Application.java](/fundamentos01/assets/06-Fundamentos01Application-02.png)
+![Captura del archivo Fundamentos01Application.java](./assets/06-Fundamentos01Application-02.png)
 
 _3. Explicación breve_
 
@@ -88,25 +88,25 @@ _1. Captura de consumo de endpoints de Products desde Bruno._
 GET /api/products         / Con 3 preductos creados
 ```
 
-![Captura de consumo de endpoints de Products desde Bruno](/fundamentos01/assets/07-consumoEndpointsProducts-03.png)
+![Captura de consumo de endpoints de Products desde Bruno](./assets/07-consumoEndpointsProducts-03.png)
 
 ```http
 GET /api/products/:id          / Con un producto existente
 ```
 
-![Captura de consumo de endpoints de Products desde Bruno](/fundamentos01/assets/08-endpointsProductsExis-03.png)
+![Captura de consumo de endpoints de Products desde Bruno](./assets/08-endpointsProductsExis-03.png)
 
 ```http
 DELETE /api/products/:id       / Eliminando un producto existente
 ```
 
-![Captura de consumo de endpoints de Products desde Bruno](/fundamentos01/assets/09-eliminarProducNoExis-03.png)
+![Captura de consumo de endpoints de Products desde Bruno](./assets/09-eliminarProducNoExis-03.png)
 
 ```http
 DELETE /api/products/:id       / Eliminando un producto que no existe
 ```
 
-![Captura de consumo de endpoints de Products desde Bruno](/fundamentos01/assets/10-eliminarProducExis-03.png)
+![Captura de consumo de endpoints de Products desde Bruno](./assets/10-eliminarProducExis-03.png)
 
 ## **Práctica 4. Controladores + Servicios + Lógica de Negocio**
 
@@ -307,4 +307,4 @@ Spring detecta la implementación de `ProductService` anotada con `@Service`, cr
 
 - Captura de 5 productos creados en PostgreSQL
 
-![Captura de 5 productos creados en PostgreSQL](/fundamentos01/assets/11-productos-05.png)
+![Captura de 5 productos creados en PostgreSQL](./assets/11-productos-05.png)
