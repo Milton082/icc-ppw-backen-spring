@@ -108,6 +108,8 @@ DELETE /api/products/:id       / Eliminando un producto que no existe
 
 ![Captura de consumo de endpoints de Products desde Bruno](./assets/10-eliminarProducExis-03.png)
 
+---
+
 ## **Práctica 4. Controladores + Servicios + Lógica de Negocio**
 
 En esta práctica se replicó toda la estructura implementada en `users/` para el recurso de `products/`.
@@ -305,6 +307,322 @@ Spring detecta la implementación de `ProductService` anotada con `@Service`, cr
 
 ## **Práctica 5: Persistencia real con PostgreSQL, Entidades JPA y Repositorios**
 
-- Captura de 5 productos creados en PostgreSQL
+- **Captura de 5 productos creados en PostgreSQL**
 
 ![Captura de 5 productos creados en PostgreSQL](./assets/11-productos-05.png)
+
+- **Captura de los cambios realizados en productos de la actividad práctica 5**
+
+  ![Captura de los cambios realizados en productos](./assets/12-productosCambios-05.png)
+
+---
+
+## **Práctica 6: Validación de DTOs y Control de Datos de Entrada**
+
+Se implementó la validación de DTOs para el recurso de productos, asegurando que los datos de entrada cumplan con las reglas definidas antes de ser procesados por el servicio.
+
+- **Captura de respuesta de error al enviar un POST inválido**
+
+Post usado para la prueba:
+
+```json
+{
+  "name": "",
+  "price": -5,
+  "stock": -1
+}
+```
+
+![Captura de respuesta de error](./assets/13-validacionPost-06.png)
+
+- **Error al actulizar producto eliminado**
+
+![Error al actulizar producto eliminado](./assets/14-validacionPut-06.png)
+
+- **findAll no devuelve productos eliminados**
+
+![findAll no devuelve productos eliminados](./assets/15-findAll-06.png)
+
+---
+
+## **Práctica 7: Manejo Global de Errores y Excepciones**
+
+Se implementó un manejo global de errores y excepciones para capturar y procesar los errores de manera uniforme en toda la aplicación, proporcionando respuestas consistentes y claras a los clientes.
+
+- **Captura de error por producto inexistente**
+
+![Captura de error por producto inexistente](./assets/16-errorInexistente-07.png)
+
+- **Captura de error por producto duplicado**
+
+![Captura de error por producto duplicado](./assets/17-errorDuplicado-07.png)
+
+- **Captura de error por validación de DTO**
+
+![Captura de error por validación de DTO](./assets/18-validacionDTO-07.png)
+
+---
+
+## **Práctica 8: Relaciones ManyToOne, Foreign Keys y Consultas Relacionales**
+
+En esta práctica se implementaron relaciones entre entidades usando JPA,
+Se trabajará con relaciones:
+
+```json
+User 1 ──── N Product
+Category 1 ──── N Product
+```
+
+Esto significa:
+
+```json
+Un usuario puede registrar muchos productos.
+Una categoría puede tener muchos productos.
+Un producto pertenece a un usuario.
+Un producto pertenece a una categoría.
+```
+
+- **Captura de descripcion de la tabla products en PostgreSQL**
+
+![Captura de descripcion de la tabla products en PostgreSQL](./assets/19-descripcionTabla-08.png)
+
+- **Captura de respuesta en bruno o postmand de la creación de Producto con sus relaciones**
+
+\_\_Debe evidenciar:
+
+- objeto anidado owner
+- objeto anidado category
+- campos de fecha\_\_
+
+![Captura de respuesta en bruno](./assets/20-creacionProducto-08.png)
+
+- **Captura de consulta de productos por categoría**
+
+![Captura de consulta de productos por categoría](./assets/21-consultaProductosPorCategoria-08.png)
+
+- **Explicación Breve**
+
+¿Cómo se relaciona ProductEntity con UserEntity y CategoryEntity usando @ManyToOne y @JoinColumn?
+
+Se utiliza la anotación `@ManyToOne` en la entidad `ProductEntity` para indicar que cada producto está asociado a un único usuario y a una única categoría. La anotación `@JoinColumn` se utiliza para especificar la columna de la base de datos que actúa como clave foránea, estableciendo así la relación entre las tablas correspondientes en la base de datos.
+
+---
+
+## **Práctica 9: Request Parameters, Consultas Relacionadas y Filtrado con JPA**
+
+En esta práctica se implemetó consultas relacionadas y filtros usando la relación actual:
+
+```json
+User 1 ──── N Product Category 1 ──── N Product
+```
+
+Luego se evolucionará la relación entre productos y categorías hacia:
+
+```json
+Product N ──── N Category
+```
+
+- **Captura de producto creado con varias categorías**
+
+Ejemplo usado:
+
+```json
+{
+  "name": "Laptop Gaming",
+  "price": 1200.0,
+  "stock": 5,
+  "userId": 1,
+  "categoryIds": [1, 2, 3]
+}
+```
+
+![Captura de producto creado con varias categorías](./assets/22-productoConVariasCategorias-09.png)
+
+- **Captura de consulta con filtros por categoría**
+
+Ejemplo usado:
+
+```json
+GET /api/categories/2/products?userId=1
+```
+
+![Captura de consulta con filtros por categoría](./assets/23-consultaConFiltrosPorCategoria-09.png)
+
+- **Explicación Breve:**
+
+**¿Por qué se usa ProductService y ProductRepository para consultar productos aunque el endpoint esté dentro del contexto /users/{id}/products o /categories/{id}/products?**
+
+Porque el servicio y el repositorio de productos encapsulan la lógica de negocio y el acceso a datos relacionados con los productos. Aunque los endpoints estén dentro del contexto de usuarios o categorías, la consulta de productos sigue siendo responsabilidad del `ProductService` y `ProductRepository`, ya que estos componentes manejan la interacción con la base de datos y aplican las reglas de negocio necesarias para obtener los productos correctos según los filtros proporcionados.
+
+**¿Qué cambió al pasar de Product N ──── 1 Category a Product N ──── N Category?**
+
+Con la relación N a N, un producto puede pertenecer a múltiples categorías y una categoría puede contener múltiples productos. Esto permite una mayor flexibilidad en la organización de los productos y facilita la búsqueda y filtrado de productos por varias categorías al mismo tiempo. Además, se requiere una tabla intermedia para gestionar las relaciones entre productos y categorías.
+
+---
+
+## **Práctica 10: Paginación de Productos con Page, Slice y Pageable**
+
+En esta práctica se implementa paginación usando Spring Data JPA.
+
+Se trabajará con:
+
+- `Page`
+- `Slice`
+- `Pageable`
+- `PageRequest`
+- `Sort`
+- endpoints paginados separados
+- validación de parámetros de paginación
+- productos con relaciones anidadas
+
+En esta práctica se mantendrá el endpoint normal:
+
+```txt
+GET /api/products
+```
+
+y se agregarán endpoints nuevos para paginación:
+
+```txt
+GET /api/products/page
+GET /api/products/slice
+```
+
+Al final, la actividad práctica consistirá en aplicar el mismo concepto al endpoint:
+
+```txt
+GET /api/categories/{id}/products
+```
+
+creando versiones paginadas.
+
+- **Captura de respuesta con Page**
+
+![Captura de respuesta con Page](./assets/24-paginacionPage-10.png)
+
+- **Captura de respuesta con Slice**
+
+![Captura de respuesta con Slice](./assets/25-paginacionSlice-10.png)
+
+- **Captura de error por paginación inválida**
+
+![Captura de error por paginación inválida](./assets/26-paginacionError-10.png)
+
+- **Captura de endpoint de categoría paginado**
+
+![Captura de endpoint de categoría paginado](./assets/27-endpointCategoriaPaginado-10.png)
+
+- **Captura de endpoint de categoría paginado**
+
+![Captura de endpoint de categoría paginado](./assets/28-endpointCategoriaPaginado-10.png)
+
+- **Explicación Breve**
+
+**¿Cuál es la diferencia entre Page y Slice?**
+
+La diferencia principal entre `Page` y `Slice` radica en la información que proporcionan sobre la paginación:
+
+**¿Por qué la paginación debe aplicarse en el repositorio y no después de traer todos los datos en memoria?**
+
+Porque aplicar la paginación en el repositorio permite que la base de datos realice la consulta de manera eficiente, devolviendo solo los registros necesarios para la página solicitada. Esto reduce el uso de memoria y mejora el rendimiento, especialmente cuando se trabaja con grandes conjuntos de datos. Si se trajeran todos los datos a memoria y luego se aplicara la paginación, se desperdiciaría recursos y tiempo, ya que se cargarían muchos registros innecesarios.
+
+---
+
+## **Práctica 11: Autenticación JWT, Autorización por Roles y Protección de Endpoints**
+
+En esta práctica implementaremos:
+
+- **Autenticación**: Verificar quién es el usuario (login)
+- **Autorización**: Verificar qué puede hacer el usuario (permisos/roles)
+- **Protección de endpoints**: Solo usuarios autenticados pueden acceder
+- **Control de ownership**: Solo el propietario puede modificar sus recursos
+
+* **Captura de registro exitoso**
+
+![Captura de registro exitoso](./assets/29-registroExitoso-11.png)
+
+- **Captura de login exitoso**
+
+![Captura de login exitoso](./assets/30-loginExitoso-11.png)
+
+- **Captura de endpoint protegido sin token**
+
+![Captura de endpoint protegido sin token](./assets/31-endpointProtegidoSinToken-11.png)
+
+- **Captura de endpoint protegido con token**
+
+![Captura de endpoint protegido con token](./assets/32-endpointProtegidoConToken-11.png)
+
+---
+
+## **Práctica 12: Protección de Endpoints con Roles**
+
+En esta práctica se implemeto:
+
+- Proteger endpoints específicos con roles
+- Usar @PreAuthorize para control de acceso
+- Inyectar usuario actual con @AuthenticationPrincipal
+- Diferenciar entre endpoints públicos y protegidos
+
+- **Captura de usuario autenticado**
+
+![Captura de usuario autenticado](./assets/33-usuarioAutenticado-12.png)
+
+- **Captura de acceso denegado por rol**
+
+![Captura de acceso denegado por rol](./assets/34-accesoDenegadoPorRol-12.png)
+
+- **Captura de acceso permitido por rol ADMIN**
+
+![Captura de acceso permitido por rol ADMIN](./assets/35-accesoPermitidoPorRolADMIN-12.png)
+
+- **Explicación breve**
+
+**¿Cuál es la diferencia entre autenticación y autorización?**
+
+La autenticación es el proceso de verificar la identidad de un usuario, asegurándose de que es quien dice ser, generalmente mediante credenciales como nombre de usuario y contraseña. La autorización, por otro lado, es el proceso de determinar qué acciones o recursos puede acceder un usuario autenticado, basándose en sus permisos o roles asignados.
+
+**¿Por qué GET /api/products debe ser solo para ADMIN, mientras GET /api/products/page puede ser consumido por cualquier usuario autenticado?**
+
+GET /api/products es un endpoint que devuelve todos los productos, lo cual puede ser considerado información sensible o crítica. Por lo tanto, solo los usuarios con el rol de ADMIN deberían tener acceso a esta información. En cambio, GET /api/products/page devuelve una página de productos, lo cual no es tan crítico y puede ser accedido por cualquier usuario autenticado.
+
+---
+
+## **Práctica 13: Validación de Propiedad de Recursos**
+
+En esta práctica se implementó:
+
+- Validar propiedad de recursos (ownership)
+- Implementar validateOwnership() en servicios
+- Permitir bypass de ADMIN
+- Manejar AccessDeniedException correctamente
+
+- **Captura de creación de producto con usuario autenticado**
+
+![Captura de creación de producto con usuario autenticado](./assets/36-creacionProductoUsuarioAutenticado-13.png)
+
+- **Captura de bloqueo por producto ajeno**
+
+![Captura de bloqueo por producto ajeno](./assets/37-bloqueoProductoAjenos-13.png)
+
+- **Captura de eliminación de producto ajeno bloqueada**
+
+![Captura de eliminación de producto ajeno bloqueada](./assets/38-eliminacionProductoAjenosBloqueada-13.png)
+
+- **Captura de ADMIN modificando producto ajeno**
+
+![Captura de ADMIN modificando producto ajeno](./assets/39-ADMIN-modificando-producto-ajeno-13.png)
+
+- **Explicación breve**
+
+**¿Qué es ownership?**
+
+Ownership se refiere a la propiedad de un recurso dentro de una aplicación. En el contexto de esta práctica, significa que un usuario tiene control sobre los recursos que ha creado, como productos, y puede realizar acciones como actualizar o eliminar esos recursos. La validación de ownership asegura que solo el propietario del recurso o un usuario con privilegios especiales (como un ADMIN) pueda modificarlo o eliminarlo.
+
+**¿Por qué no es seguro recibir userId en CreateProductDto?**
+
+No es seguro recibir userId en CreateProductDto porque permitir que el cliente especifique el userId podría llevar a problemas de seguridad, como la creación de productos en nombre de otros usuarios. Esto podría permitir a un usuario malintencionado crear productos asociados a otro usuario sin su consentimiento. En su lugar, el sistema debe determinar automáticamente el userId del usuario autenticado que está realizando la solicitud, garantizando así que los productos se creen correctamente bajo la propiedad del usuario que los creó.
+
+**¿Cuál es la diferencia entre autorización por rol y autorización por ownership?**
+
+La autorización por rol se basa en los permisos asignados a un usuario según su rol dentro del sistema (por ejemplo, ADMIN, USER). Un usuario con un rol específico puede acceder a ciertos recursos o realizar ciertas acciones independientemente de quién sea el propietario del recurso.
