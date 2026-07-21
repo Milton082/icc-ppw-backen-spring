@@ -36,7 +36,7 @@ public class CategoryProductsController {
      */
     @GetMapping("/{id}/products")
     public List<ProductResponseDto> findProductsByCategory(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @ModelAttribute ProductFilterByCategoryDto filters) {
         return productService.findByCategoryIdWithFilters(id, filters);
     }
@@ -50,7 +50,7 @@ public class CategoryProductsController {
      */
     @GetMapping("/{id}/products/page")
     public Page<ProductResponseDto> findProductsByCategoryPage(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @ModelAttribute ProductFilterByCategoryDto filters,
             @Valid @ModelAttribute PaginationDto pagination) {
         return productService.findByCategoryIdWithFiltersPage(id, filters, pagination);
@@ -65,7 +65,7 @@ public class CategoryProductsController {
      */
     @GetMapping("/{id}/products/slice")
     public Slice<ProductResponseDto> findProductsByCategorySlice(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @ModelAttribute ProductFilterByCategoryDto filters,
             @Valid @ModelAttribute PaginationDto pagination) {
         return productService.findByCategoryIdWithFiltersSlice(id, filters, pagination);

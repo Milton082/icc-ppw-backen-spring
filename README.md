@@ -305,6 +305,8 @@ public ProductsController(ProductService service) {
 
 Spring detecta la implementación de `ProductService` anotada con `@Service`, crea su instancia y la entrega automáticamente al controlador.
 
+---
+
 ## **Práctica 5: Persistencia real con PostgreSQL, Entidades JPA y Repositorios**
 
 - **Captura de 5 productos creados en PostgreSQL**
@@ -313,7 +315,7 @@ Spring detecta la implementación de `ProductService` anotada con `@Service`, cr
 
 - **Captura de los cambios realizados en productos de la actividad práctica 5**
 
-  ![Captura de los cambios realizados en productos](./assets/12-productosCambios-05.png)
+![Captura de los cambios realizados en productos](./assets/12-productosCambios-05.png)
 
 ---
 
@@ -384,15 +386,15 @@ Un producto pertenece a una categoría.
 
 - **Captura de descripcion de la tabla products en PostgreSQL**
 
-![Captura de descripcion de la tabla products en PostgreSQL](./assets/19-descripcionTabla-08.png)
+![Captura de descripcion de la tabla products en Bruno](./assets/19-descripcionTabla-08.png)
 
-- **Captura de respuesta en bruno o postmand de la creación de Producto con sus relaciones**
+- **Captura de respuesta en bruno de la creación de Producto con sus relaciones**
 
-\_\_Debe evidenciar:
+Debe evidenciar:
 
 - objeto anidado owner
 - objeto anidado category
-- campos de fecha\_\_
+- campos de fecha
 
 ![Captura de respuesta en bruno](./assets/20-creacionProducto-08.png)
 

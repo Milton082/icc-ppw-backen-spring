@@ -82,9 +82,21 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/status/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/products/**").permitAll()
+                        .requestMatchers("/categories/**").permitAll()
+                        .requestMatchers("/users/**").permitAll()
+                        .requestMatchers("/roles/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-resources/**",
+                                "/webjars/**")
+                        .permitAll());
 
-                        // Todos los demás endpoints requieren autenticación
-                        .anyRequest().authenticated());
+        // Todos los demás endpoints requieren autenticación
+        // .anyRequest().authenticated());
 
         // Agregar proveedor de autenticación
         http.authenticationProvider(authenticationProvider());

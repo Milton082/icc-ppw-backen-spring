@@ -18,24 +18,26 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-webmvc")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
-	testImplementation ("org.springframework.boot:spring-boot-starter-data-jpa-test")
-	runtimeOnly ("org.postgresql:postgresql")
+    implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-	
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	runtimeOnly("org.postgresql:postgresql")
 
-		// Spring Security
+	// ============== SEGURIDAD: Spring Security + JWT ==============
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	
-	// JWT - JSON Web Token
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+	implementation("com.fasterxml.jackson.core:jackson-databind")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
+
 }
+
 
 tasks.withType<Test> {
 	useJUnitPlatform()

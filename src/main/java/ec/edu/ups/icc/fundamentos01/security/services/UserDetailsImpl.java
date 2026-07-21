@@ -14,23 +14,19 @@ public class UserDetailsImpl implements UserDetails {
     private final Long id;
     private final String name;
     private final String email;
-    private final String password;
+    private final String passwordHash;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String name, String email, String password,
+    public UserDetailsImpl(Long id, String name, String email, String passwordHash,
             Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.passwordHash = passwordHash;
         this.authorities = authorities;
     }
 
-    /**
-     * Factory method para crear UserDetailsImpl desde UserEntity
-     */
     public static UserDetailsImpl build(UserEntity user) {
-        // Convertir roles a authorities de Spring Security
         Collection<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
@@ -43,9 +39,17 @@ public class UserDetailsImpl implements UserDetails {
                 authorities);
     }
 
-    // ============== GETTERS ==============
+    public Long getId() {
+        return id;
+    }
 
-    // ============== MÉTODOS DE UserDetails ==============
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -54,12 +58,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return passwordHash;
     }
 
     @Override
     public String getUsername() {
-        return email; // Usamos email como username
+        return email;
     }
 
     @Override
@@ -80,17 +84,5 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
     }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ec.edu.ups.icc.fundamentos01.core.dto.PaginationDto;
@@ -26,11 +25,17 @@ import ec.edu.ups.icc.fundamentos01.products.dtos.PartialUpdateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductResponseDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.UpdateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.services.ProductService;
+import ec.edu.ups.icc.fundamentos01.security.config.OpenApiConfig;
 import ec.edu.ups.icc.fundamentos01.security.services.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/products")
+@SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class ProductsController {
 
     private final ProductService service;
@@ -44,7 +49,11 @@ public class ProductsController {
      *
      * GET /api/products
      *
-     * Solo puede acceder un usuario con ROLE_ADMIN.
+     * Se mantiene sin paginación para comparar con los endpoints paginados.
+     *
+     * Solo ADMIN puede acceder: muestra todos los productos de todos los
+     * usuarios sin paginación, lo que expone más información de la necesaria
+     * para un usuario común.
      */
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -56,6 +65,8 @@ public class ProductsController {
      * Endpoint paginado usando Page.
      *
      * GET /api/products/page
+     * GET /api/products/page?page=0&size=5
+     * GET /api/products/page?page=0&size=5&sortBy=price&direction=desc
      */
     @GetMapping("/page")
     public Page<ProductResponseDto> findAllPage(
@@ -67,59 +78,104 @@ public class ProductsController {
      * Endpoint paginado usando Slice.
      *
      * GET /api/products/slice
+     * GET /api/products/slice?page=0&size=5
+     * GET /api/products/slice?page=0&size=5&sortBy=createdAt&direction=desc
+     *
+     * Solo muestra los productos del usuario autenticado (owner = token JWT).
      */
     @GetMapping("/slice")
     public Slice<ProductResponseDto> findAllSlice(
-            @Valid @ModelAttribute PaginationDto pagination) {
-        return service.findAllSlice(pagination);
+            @Valid @ModelAttribute PaginationDto pagination,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        return service.findAllSlice(pagination, currentUser);
     }
 
+    @Operation(summary = "Obtener producto por ID", description = """
+            Busca un producto activo utilizando su identificador.
+
+            Requiere autenticación JWT.
+            El usuario debe enviar un access token válido.
+            """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Producto encontrado correctamente"),
+            @ApiResponse(responseCode = "401", description = "No se proporcionó un access token válido"),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+    })
+
     @GetMapping("/{id}")
-    public ProductResponseDto findOne(@PathVariable Long id) {
+    public ProductResponseDto findOne(@PathVariable("id") Long id) {
         return service.findOne(id);
     }
 
+    /*
+     * Crear producto.
+     *
+     * POST /api/products
+     *
+     * El owner ya no se toma desde el body: se obtiene desde el token JWT
+     * mediante @AuthenticationPrincipal (ver Práctica 13).
+     */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ProductResponseDto create(
             @Valid @RequestBody CreateProductDto dto,
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
         return service.create(dto, currentUser);
     }
 
+    /*
+     * Actualizar producto.
+     *
+     * PUT /api/products/{id}
+     *
+     * La validación de ownership (propietario, ADMIN o no) se hace en el
+     * servicio, no aquí (ver Práctica 13).
+     */
+
     @PutMapping("/{id}")
     public ProductResponseDto update(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody UpdateProductDto dto,
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
         return service.update(id, dto, currentUser);
     }
 
+    /*
+     * Actualizar parcialmente un producto.
+     *
+     * PATCH /api/products/{id}
+     *
+     * Misma validación de ownership que update().
+     */
     @PatchMapping("/{id}")
     public ProductResponseDto partialUpdate(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody PartialUpdateProductDto dto,
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
         return service.partialUpdate(id, dto, currentUser);
     }
 
+    /*
+     * Eliminar producto lógicamente.
+     *
+     * DELETE /api/products/{id}
+     *
+     * Misma validación de ownership que update().
+     */
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(
-            @PathVariable Long id,
+    public ResponseEntity<Void> delete(
+            @PathVariable("id") Long id,
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
         service.delete(id, currentUser);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/user/{userId}")
-    public List<ProductResponseDto> findByUserId(
-            @PathVariable Long userId) {
+    public List<ProductResponseDto> findByUserId(@PathVariable("userId") Long userId) {
         return service.findByUserId(userId);
     }
 
     @GetMapping("/category/{categoryId}")
-    public List<ProductResponseDto> findByCategoryId(
-            @PathVariable Long categoryId) {
+    public List<ProductResponseDto> findByCategoryId(@PathVariable("categoryId") Long categoryId) {
         return service.findByCategoryId(categoryId);
     }
 
