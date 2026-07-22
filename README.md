@@ -789,8 +789,8 @@ Se utilizó PostgreSQL instalado en la máquina anfitriona (HOST), accesible des
 
 _(Si se usó la alternativa de contingencia, reemplazar el párrafo anterior indicando que se levantó PostgreSQL en un contenedor Docker dentro de `app-network`.)_
 
-**5. Consumo del login desde la máquina anfitriona (Bruno/Postman)**
+**5. Consumo del login desde la máquina anfitriona (Bruno)**
 
-![Login consumido desde Bruno/Postman](./assets/55-login-bruno-16.png)
+![Login consumido desde Bruno](./assets/55-login-bruno-16.png)
 
 _Petición `POST /api/auth/login` ejecutada desde la HOST contra `http://192.168.56.2/api/auth/login`, mostrando respuesta exitosa con el token generado._
