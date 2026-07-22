@@ -82,10 +82,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/status/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/products/**").permitAll()
                         .requestMatchers("/categories/**").permitAll()
                         .requestMatchers("/users/**").permitAll()
                         .requestMatchers("/roles/**").permitAll()
+                        .requestMatchers("/products/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
