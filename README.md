@@ -793,4 +793,4 @@ _(Si se usó la alternativa de contingencia, reemplazar el párrafo anterior ind
 
 ![Login consumido desde Bruno](./assets/55-login-bruno-16.png)
 
-_Petición `POST /api/auth/login` ejecutada desde la HOST contra `http://192.168.56.2/api/auth/login`, mostrando respuesta exitosa con el token generado._
+_Petición `POST /api/auth/login` ejecutada desde la HOST contra `http://192.168.56.1/api/auth/login`, mostrando respuesta exitosa con el token generado._
